@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 31, 2026 at 04:33 PM
+-- Generation Time: Nov 01, 2026 at 10:47 AM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.30
 
@@ -38,6 +38,13 @@ CREATE TABLE `ai_analyses` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `ai_analyses`
+--
+
+INSERT INTO `ai_analyses` (`id`, `session_id`, `summary`, `strengths`, `weaknesses`, `recommendations`, `raw_response`, `created_at`) VALUES
+(1, 1, 'AI fallback aktif karena API Gemini belum dikonfigurasi atau gagal merespons. Hasil ini dibuat dari skor assessment yang tersedia.', '[\"Pemecahan masalah dasar\"]', '[\"HTML & CSS\", \"JavaScript\", \"PHP\", \"Database\", \"Programming Logic\"]', '[\"Tingkatkan latihan soal secara bertahap dan fokus pada kompetensi dengan skor terendah.\", \"Pelajari materi yang relevan dalam 30 hari berikutnya dan ulangi checkpoint setiap minggu.\", \"Bangun proyek mini untuk menerapkan konsep yang dipelajari secara nyata.\"]', '{\"summary\":\"AI fallback aktif karena API Gemini belum dikonfigurasi atau gagal merespons. Hasil ini dibuat dari skor assessment yang tersedia.\",\"strengths\":[\"Pemecahan masalah dasar\"],\"weaknesses\":[\"HTML & CSS\",\"JavaScript\",\"PHP\",\"Database\",\"Programming Logic\"],\"recommendations\":[\"Tingkatkan latihan soal secara bertahap dan fokus pada kompetensi dengan skor terendah.\",\"Pelajari materi yang relevan dalam 30 hari berikutnya dan ulangi checkpoint setiap minggu.\",\"Bangun proyek mini untuk menerapkan konsep yang dipelajari secara nyata.\"],\"project_ideas\":[\"Buat landing page porto digital dengan HTML, CSS, dan JavaScript.\",\"Bangun fitur login dan dashboard sederhana dengan PHP + MySQL.\",\"Rancang aplikasi mini CRUD untuk data siswa atau produk.\"]}', '2026-10-31 16:56:21');
+
 -- --------------------------------------------------------
 
 --
@@ -55,6 +62,27 @@ CREATE TABLE `answers` (
   `submitted_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `answers`
+--
+
+INSERT INTO `answers` (`id`, `session_id`, `question_id`, `selected_option_id`, `code_submission`, `is_correct`, `score`, `submitted_at`) VALUES
+(1, 1, 1, 1, NULL, 0, 0.00, '2026-11-01 00:56:21'),
+(2, 1, 2, 5, NULL, 0, 0.00, '2026-11-01 00:56:21'),
+(3, 1, 3, NULL, 'function solve() { return true; }', 0, 20.00, '2026-11-01 00:56:21'),
+(4, 1, 4, 9, NULL, 0, 0.00, '2026-11-01 00:56:21'),
+(5, 1, 5, 13, NULL, 1, 10.00, '2026-11-01 00:56:21'),
+(6, 1, 6, NULL, 'function solve() { return true; }', 0, 20.00, '2026-11-01 00:56:21'),
+(7, 1, 7, 17, NULL, 0, 0.00, '2026-11-01 00:56:21'),
+(8, 1, 8, 21, NULL, 0, 0.00, '2026-11-01 00:56:21'),
+(9, 1, 9, NULL, 'function solve() { return true; }', 0, 20.00, '2026-11-01 00:56:21'),
+(10, 1, 10, 25, NULL, 0, 0.00, '2026-11-01 00:56:21'),
+(11, 1, 11, 29, NULL, 0, 0.00, '2026-11-01 00:56:21'),
+(12, 1, 12, NULL, 'function solve() { return true; }', 0, 20.00, '2026-11-01 00:56:21'),
+(13, 1, 13, 33, NULL, 1, 10.00, '2026-11-01 00:56:21'),
+(14, 1, 14, 37, NULL, 0, 0.00, '2026-11-01 00:56:21'),
+(15, 1, 15, NULL, 'function solve() { return true; }', 0, 20.00, '2026-11-01 00:56:21');
+
 -- --------------------------------------------------------
 
 --
@@ -71,6 +99,17 @@ CREATE TABLE `assessment_scores` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `assessment_scores`
+--
+
+INSERT INTO `assessment_scores` (`id`, `session_id`, `competency_id`, `multiple_choice_score`, `coding_score`, `final_score`, `created_at`) VALUES
+(1, 1, 1, 0.00, 20.00, 12.00, '2026-10-31 16:56:21'),
+(2, 1, 2, 50.00, 20.00, 32.00, '2026-10-31 16:56:21'),
+(3, 1, 3, 0.00, 20.00, 12.00, '2026-10-31 16:56:21'),
+(4, 1, 4, 0.00, 20.00, 12.00, '2026-10-31 16:56:21'),
+(5, 1, 5, 50.00, 20.00, 32.00, '2026-10-31 16:56:21');
+
 -- --------------------------------------------------------
 
 --
@@ -84,6 +123,13 @@ CREATE TABLE `assessment_sessions` (
   `finished_at` datetime DEFAULT NULL,
   `status` enum('in_progress','completed') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'in_progress'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `assessment_sessions`
+--
+
+INSERT INTO `assessment_sessions` (`id`, `user_id`, `started_at`, `finished_at`, `status`) VALUES
+(1, 3, '2026-11-01 00:56:21', '2026-11-01 00:56:21', 'completed');
 
 -- --------------------------------------------------------
 
@@ -99,6 +145,19 @@ CREATE TABLE `coding_test_cases` (
   `points` decimal(6,2) NOT NULL DEFAULT '1.00',
   `is_hidden` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `coding_test_cases`
+--
+
+INSERT INTO `coding_test_cases` (`id`, `question_id`, `input_data`, `expected_output`, `points`, `is_hidden`) VALUES
+(1, 6, '5,4', '20', 10.00, 0),
+(2, 6, '10,3', '30', 10.00, 0),
+(3, 3, 'Tidak ada input', 'Struktur HTML valid', 20.00, 0),
+(4, 9, 'Bali', 'Halo, Bali', 20.00, 0),
+(5, 12, 'Tidak ada input', 'SELECT * FROM siswa;', 20.00, 0),
+(6, 15, '4', 'Genap', 10.00, 0),
+(7, 15, '7', 'Ganjil', 10.00, 0);
 
 -- --------------------------------------------------------
 
@@ -161,6 +220,27 @@ CREATE TABLE `questions` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `questions`
+--
+
+INSERT INTO `questions` (`id`, `competency_id`, `type`, `title`, `question_text`, `difficulty`, `points`, `programming_language`, `starter_code`, `created_at`) VALUES
+(1, 1, 'multiple_choice', 'Fungsi HTML', 'Apa fungsi utama HTML dalam pembuatan website?', 'easy', 10.00, NULL, NULL, '2026-10-31 16:34:42'),
+(2, 1, 'multiple_choice', 'Semantic HTML', 'Tag HTML apa yang digunakan untuk membuat navigasi?', 'easy', 10.00, NULL, NULL, '2026-10-31 16:34:42'),
+(3, 1, 'coding', 'Membuat Struktur HTML', 'Buat struktur HTML sederhana yang memiliki heading, paragraf, dan tombol.', 'easy', 20.00, NULL, NULL, '2026-10-31 16:34:42'),
+(4, 2, 'multiple_choice', 'Variabel JavaScript', 'Keyword apa yang digunakan untuk membuat variabel yang nilainya dapat diubah?', 'easy', 10.00, NULL, NULL, '2026-10-31 16:34:42'),
+(5, 2, 'multiple_choice', 'Fungsi JavaScript', 'Apa fungsi utama dari function dalam JavaScript?', 'easy', 10.00, NULL, NULL, '2026-10-31 16:34:42'),
+(6, 2, 'coding', 'Menghitung Luas Persegi Panjang', 'Buat function bernama hitungLuas yang menerima panjang dan lebar, lalu mengembalikan hasil perkaliannya.', 'easy', 20.00, 'javascript', NULL, '2026-10-31 16:34:42'),
+(7, 3, 'multiple_choice', 'Variabel PHP', 'Simbol apa yang digunakan untuk menandai variabel PHP?', 'easy', 10.00, NULL, NULL, '2026-10-31 16:34:42'),
+(8, 3, 'multiple_choice', 'Form PHP', 'Superglobal PHP apa yang biasanya digunakan untuk menerima data form dengan metode POST?', 'easy', 10.00, NULL, NULL, '2026-10-31 16:34:42'),
+(9, 3, 'coding', 'Menampilkan Pesan PHP', 'Buat kode PHP untuk menyimpan nama ke variabel dan menampilkannya.', 'easy', 20.00, NULL, NULL, '2026-10-31 16:34:42'),
+(10, 4, 'multiple_choice', 'Perintah SELECT', 'Perintah SQL apa yang digunakan untuk mengambil data dari tabel?', 'easy', 10.00, NULL, NULL, '2026-10-31 16:34:42'),
+(11, 4, 'multiple_choice', 'Primary Key', 'Apa fungsi Primary Key dalam sebuah tabel database?', 'easy', 10.00, NULL, NULL, '2026-10-31 16:34:42'),
+(12, 4, 'coding', 'Query Mengambil Data', 'Buat query SQL untuk mengambil semua data dari tabel siswa.', 'easy', 20.00, NULL, NULL, '2026-10-31 16:34:42'),
+(13, 5, 'multiple_choice', 'Percabangan', 'Struktur apa yang digunakan untuk menjalankan kode berdasarkan kondisi?', 'easy', 10.00, NULL, NULL, '2026-10-31 16:34:42'),
+(14, 5, 'multiple_choice', 'Perulangan', 'Struktur apa yang digunakan untuk menjalankan kode berulang kali?', 'easy', 10.00, NULL, NULL, '2026-10-31 16:34:42'),
+(15, 5, 'coding', 'Menentukan Bilangan Genap', 'Buat function JavaScript yang menerima sebuah angka dan mengembalikan teks Genap atau Ganjil.', 'easy', 20.00, 'javascript', NULL, '2026-10-31 16:34:42');
+
 -- --------------------------------------------------------
 
 --
@@ -174,6 +254,52 @@ CREATE TABLE `question_options` (
   `option_text` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `is_correct` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `question_options`
+--
+
+INSERT INTO `question_options` (`id`, `question_id`, `option_label`, `option_text`, `is_correct`) VALUES
+(1, 1, 'A', 'Mengatur database', 0),
+(2, 1, 'B', 'Membuat struktur halaman web', 1),
+(3, 1, 'C', 'Mengatur server', 0),
+(4, 1, 'D', 'Membuat animasi 3D', 0),
+(5, 2, 'A', '<section>', 0),
+(6, 2, 'B', '<footer>', 0),
+(7, 2, 'C', '<nav>', 1),
+(8, 2, 'D', '<article>', 0),
+(9, 4, 'A', 'const', 0),
+(10, 4, 'B', 'let', 1),
+(11, 4, 'C', 'static', 0),
+(12, 4, 'D', 'define', 0),
+(13, 5, 'A', 'Mengelompokkan kode agar dapat digunakan kembali', 1),
+(14, 5, 'B', 'Menghapus database', 0),
+(15, 5, 'C', 'Mengatur tampilan CSS', 0),
+(16, 5, 'D', 'Menghubungkan komputer ke internet', 0),
+(17, 7, 'A', '#', 0),
+(18, 7, 'B', '$', 1),
+(19, 7, 'C', '@', 0),
+(20, 7, 'D', '&', 0),
+(21, 8, 'A', '$_GET', 0),
+(22, 8, 'B', '$_SESSION', 0),
+(23, 8, 'C', '$_POST', 1),
+(24, 8, 'D', '$_SERVER', 0),
+(25, 10, 'A', 'INSERT', 0),
+(26, 10, 'B', 'UPDATE', 0),
+(27, 10, 'C', 'SELECT', 1),
+(28, 10, 'D', 'DELETE', 0),
+(29, 11, 'A', 'Menghapus tabel', 0),
+(30, 11, 'B', 'Mengidentifikasi setiap baris secara unik', 1),
+(31, 11, 'C', 'Mengubah warna tabel', 0),
+(32, 11, 'D', 'Menyimpan gambar', 0),
+(33, 13, 'A', 'if-else', 1),
+(34, 13, 'B', 'print', 0),
+(35, 13, 'C', 'input', 0),
+(36, 13, 'D', 'comment', 0),
+(37, 14, 'A', 'variable', 0),
+(38, 14, 'B', 'loop', 1),
+(39, 14, 'C', 'array', 0),
+(40, 14, 'D', 'string', 0);
 
 -- --------------------------------------------------------
 
@@ -190,6 +316,13 @@ CREATE TABLE `roadmaps` (
   `duration_days` int NOT NULL DEFAULT '30',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `roadmaps`
+--
+
+INSERT INTO `roadmaps` (`id`, `user_id`, `analysis_id`, `title`, `description`, `duration_days`, `created_at`) VALUES
+(1, 3, 1, 'Roadmap Belajar 30 Hari', 'Roadmap berdasarkan hasil assessment dan analisis AI.', 30, '2026-10-31 16:56:21');
 
 -- --------------------------------------------------------
 
@@ -222,6 +355,16 @@ CREATE TABLE `users` (
   `role` enum('student','admin') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'student',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VALUES
+(1, 'Verify User', 'verify_1793465607@example.com', '$2y$10$xVTSV3Ve106W/qE8hSVSheCupzssMqmQ7hbL8KQUc1fxWdpBMfxAG', 'student', '2026-10-31 16:53:27'),
+(2, 'Copilot Verify', 'copilot_verify_1793465625@example.com', '$2y$10$eoCeXwPTHk8EXFsDVo9l3.aeN1cdiIpmhLHfwHL6JMlTxwnPebG4a', 'student', '2026-10-31 16:53:45'),
+(3, 'Assess User', 'assess_1793465780@example.com', '$2y$10$3Pkc4kZ4RsS/FSs4ymvJVOcvDJzJl9sF2YN2TgsR9ktIKaJpEoQDS', 'student', '2026-10-31 16:56:20'),
+(4, 'Admin BaliReady', 'admin@baliready.ai', '$2y$10$gbQiub5TP.kDDD52rvAFOud.mPc08Vmc1OxPK89Mm39Kv0l9lSgfe', 'admin', '2026-10-31 17:02:00');
 
 --
 -- Indexes for dumped tables
@@ -323,31 +466,31 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `ai_analyses`
 --
 ALTER TABLE `ai_analyses`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `answers`
 --
 ALTER TABLE `answers`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `assessment_scores`
 --
 ALTER TABLE `assessment_scores`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `assessment_sessions`
 --
 ALTER TABLE `assessment_sessions`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `coding_test_cases`
 --
 ALTER TABLE `coding_test_cases`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `competencies`
@@ -365,19 +508,19 @@ ALTER TABLE `learning_materials`
 -- AUTO_INCREMENT for table `questions`
 --
 ALTER TABLE `questions`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `question_options`
 --
 ALTER TABLE `question_options`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT for table `roadmaps`
 --
 ALTER TABLE `roadmaps`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `roadmap_items`
@@ -389,7 +532,7 @@ ALTER TABLE `roadmap_items`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
