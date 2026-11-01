@@ -38,11 +38,24 @@ function is_logged_in(): bool
     return !empty($_SESSION['user_id']);
 }
 
+function app_base_path(): string
+{
+    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+    if ($scriptName !== '') {
+        $base = dirname($scriptName);
+        if ($base === '/' || $base === '\\' || $base === '.') {
+            return '';
+        }
+        return $base;
+    }
+
+    return '';
+}
+
 function require_login(): void
 {
     if (!is_logged_in()) {
-        header('Location: /baliready-ai/public/login.php');
-        exit;
+        redirect((app_base_path() ?: '') . '/login.php');
     }
 }
 
@@ -51,8 +64,7 @@ function require_admin(): void
     require_login();
 
     if ((current_user()['role'] ?? 'student') !== 'admin') {
-        header('Location: /baliready-ai/public/dashboard.php');
-        exit;
+        redirect((app_base_path() ?: '') . '/dashboard.php');
     }
 }
 
@@ -77,7 +89,21 @@ function validate_csrf(string $token): bool
 
 function redirect(string $path): void
 {
-    header('Location: ' . $path);
+    $normalized = trim($path);
+    if ($normalized === '') {
+        $normalized = './';
+    }
+
+    $normalized = preg_replace('#^/baliready-ai/public/#', '/', $normalized);
+    $normalized = preg_replace('#^/baliready-ai/#', '/', $normalized);
+    $normalized = preg_replace('#^/public/#', '/', $normalized);
+
+    if (!preg_match('#^https?://#i', $normalized) && !str_starts_with($normalized, '/')) {
+        $base = app_base_path();
+        $normalized = ($base !== '' ? $base : '') . '/' . ltrim($normalized, '/');
+    }
+
+    header('Location: ' . $normalized);
     exit;
 }
 

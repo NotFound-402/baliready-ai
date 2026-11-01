@@ -1,3 +1,10 @@
+<?php
+$questions = $data['questions'] ?? [];
+$optionsByQuestion = $data['optionsByQuestion'] ?? [];
+$competencies = $data['competencies'] ?? [];
+$questionCount = count($questions);
+$activeSession = $controller->getActiveSession((int) current_user()['id']) ?? null;
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -5,97 +12,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assessment | BaliReady AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/css/style.css?v=20261101">
 </head>
-<body class="bg-slate-50 text-slate-800">
-    <div class="min-h-screen flex">
-        <aside class="w-72 bg-white border-r border-slate-200 p-6 hidden md:block">
-            <div class="flex items-center gap-3 mb-10">
-                <div class="w-11 h-11 rounded-2xl bg-blue-600 text-white font-bold flex items-center justify-center">BR</div>
-                <div>
-                    <div class="font-bold">BaliReady AI</div>
-                    <div class="text-xs text-slate-500">Student Portal</div>
+<body class="assessment-shell">
+    <div class="assessment-layout">
+        <aside class="side-panel">
+            <div class="brand">
+                <span class="logo-mark">BR</span>
+                <span>BaliReady AI</span>
+            </div>
+
+            <div style="margin-top: 22px; background: rgba(234,243,255,0.6); border: 1px solid rgba(16,45,89,0.08); border-radius: 18px; padding: 16px;">
+                <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(20,43,80,0.7); font-weight: 800;">Assessment</div>
+                <div style="font-size: 1.2rem; font-weight: 900; color: var(--dark-navy); margin-top: 8px;">
+                    <?php echo e($questions[0]['competency_name'] ?? 'Ujian'); ?>
                 </div>
             </div>
-            <nav class="space-y-2 text-sm font-medium">
-                <a href="dashboard.php" class="block rounded-xl text-slate-600 hover:bg-slate-100 px-4 py-3">Dashboard</a>
-                <a href="assessment.php" class="block rounded-xl bg-blue-50 text-blue-700 px-4 py-3">Assessment</a>
-                <a href="analysis.php" class="block rounded-xl text-slate-600 hover:bg-slate-100 px-4 py-3">AI Analysis</a>
-                <a href="roadmap.php" class="block rounded-xl text-slate-600 hover:bg-slate-100 px-4 py-3">Roadmap</a>
-                <a href="progress.php" class="block rounded-xl text-slate-600 hover:bg-slate-100 px-4 py-3">Progress</a>
-                <a href="logout.php" class="block rounded-xl text-red-600 hover:bg-red-50 px-4 py-3 mt-8">Logout</a>
-            </nav>
+
+            <?php if (!empty($competencies)): ?>
+                <div class="chapter-list">
+                    <?php foreach ($competencies as $index => $competency): ?>
+                        <div class="chapter-item <?php echo $index === 0 ? 'active' : ''; ?>">
+                            <span class="chapter-number"><?php echo (int) ($index + 1); ?></span>
+                            <?php echo e($competency['name']); ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
         </aside>
 
-        <main class="flex-1 p-6 md:p-10">
-            <div class="max-w-5xl mx-auto">
-                <div class="mb-6">
-                    <p class="text-sm text-blue-600 font-semibold">Assessment</p>
-                    <h1 class="text-3xl font-bold text-slate-900">Uji kemampuan teknismu</h1>
+        <main class="question-panel">
+            <?php if (!empty($errorMessage)): ?>
+                <div style="margin-bottom: 16px; background: rgba(239,71,111,0.08); border: 1px solid rgba(239,71,111,0.2); color: #b93f5f; border-radius: 14px; padding: 12px 14px; font-weight:600;">
+                    <?php echo e($errorMessage); ?>
                 </div>
+            <?php endif; ?>
 
-                <?php if (!empty($errorMessage)): ?>
-                    <div class="mb-6 rounded-xl bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm"><?php echo e($errorMessage); ?></div>
-                <?php endif; ?>
-
-                <form method="post" class="space-y-8">
+            <?php if ($questionCount > 0): ?>
+                <form method="post" id="assessment-form">
                     <?php echo csrf_field(); ?>
                     <input type="hidden" name="submit_assessment" value="1">
+                    <?php if ($activeSession): ?>
+                        <input type="hidden" name="session_id" value="<?php echo (int) $activeSession['id']; ?>">
+                    <?php endif; ?>
 
-                    <?php foreach ($data['competencies'] ?? [] as $competency): ?>
-                        <?php $competencyQuestions = []; ?>
-                        <?php foreach ($data['questions'] ?? [] as $question): ?>
-                            <?php if ((int) ($question['competency_id'] ?? 0) === (int) ($competency['id'] ?? 0)): ?>
-                                <?php $competencyQuestions[] = $question; ?>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
+                    <div class="question-topbar">
+                        <div>
+                            <div style="font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(20,43,80,0.68); font-weight: 800;">Task</div>
+                            <h1 id="assessment-title" style="margin: 8px 0 0; font-size: 2rem; font-weight: 900; color: var(--dark-navy);">Bagian 1 dari <?php echo (int) $questionCount; ?></h1>
+                        </div>
+                        <div class="progress-bar"><span id="assessment-progress" style="width: <?php echo ($questionCount > 0) ? (100 / $questionCount) : 0; ?>%;"></span></div>
+                    </div>
 
-                        <?php if (!empty($competencyQuestions)): ?>
-                            <section class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-                                <div class="mb-5">
-                                    <div class="text-xs uppercase tracking-[0.2em] text-slate-500">Kompetensi</div>
-                                    <h2 class="text-2xl font-bold text-slate-900 mt-2"><?php echo e($competency['name']); ?></h2>
-                                </div>
+                    <?php foreach ($questions as $index => $question): ?>
+                        <div class="question-card assessment-question" data-question-index="<?php echo (int) $index; ?>" style="<?php echo $index === 0 ? '' : 'display: none;'; ?>">
+                            <div class="q-headline">
+                                <div class="q-tag"><?php echo $question['type'] === 'coding' ? 'Coding' : 'Pilihan Ganda'; ?></div>
+                                <span style="font-weight: 700; color: rgba(20,43,80,0.7);">Skor: <?php echo e($question['points']); ?></span>
+                            </div>
 
-                                <div class="space-y-5">
-                                    <?php foreach ($competencyQuestions as $question): ?>
-                                        <div class="border border-slate-200 rounded-2xl p-5">
-                                            <div class="flex justify-between items-start gap-3 mb-3">
-                                                <div>
-                                                    <div class="text-xs font-semibold uppercase text-blue-600"><?php echo $question['type'] === 'coding' ? 'Coding' : 'Pilihan Ganda'; ?></div>
-                                                    <h3 class="text-lg font-bold text-slate-900 mt-1"><?php echo e($question['title']); ?></h3>
-                                                </div>
-                                                <span class="bg-slate-100 text-slate-600 px-2 py-1 text-xs rounded-full"><?php echo e($question['difficulty']); ?></span>
-                                            </div>
+                            <h2 style="margin: 0 0 12px; font-size: 1.6rem; font-weight: 900; color: var(--dark-navy);"><?php echo e($question['title']); ?></h2>
+                            <p style="margin:0; color: rgba(20,43,80,0.72); line-height: 1.7;">
+                                <?php echo nl2br(e($question['question_text'])); ?>
+                            </p>
 
-                                            <p class="text-slate-600 mb-4"><?php echo e($question['question_text']); ?></p>
-
-                                            <?php if ($question['type'] === 'multiple_choice'): ?>
-                                                <div class="space-y-3">
-                                                    <?php foreach (($data['optionsByQuestion'][$question['id']] ?? []) as $option): ?>
-                                                        <label class="flex items-start gap-3 rounded-xl border border-slate-200 p-3 hover:bg-slate-50 cursor-pointer">
-                                                            <input type="radio" name="answers[<?php echo (int) $question['id']; ?>][option]" value="<?php echo (int) $option['id']; ?>" class="mt-1 text-blue-600">
-                                                            <span class="font-semibold text-slate-700 mr-2"><?php echo e($option['option_label']); ?>.</span>
-                                                            <span class="text-slate-700"><?php echo e($option['option_text']); ?></span>
-                                                        </label>
-                                                    <?php endforeach; ?>
-                                                </div>
-                                            <?php else: ?>
-                                                <textarea name="answers[<?php echo (int) $question['id']; ?>][code]" rows="8" class="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Tulis solusi Anda di sini..."><?php echo e($question['starter_code'] ?? ''); ?></textarea>
-                                            <?php endif; ?>
-                                        </div>
+                            <?php if ($question['type'] === 'multiple_choice'): ?>
+                                <div class="answer-list">
+                                    <?php foreach ($optionsByQuestion[$question['id']] ?? [] as $option): ?>
+                                        <label class="answer-option">
+                                            <input type="radio" name="answers[<?php echo (int) $question['id']; ?>][option]" value="<?php echo (int) $option['id']; ?>">
+                                            <span><?php echo e($option['option_label'] . '. ' . $option['option_text']); ?></span>
+                                        </label>
                                     <?php endforeach; ?>
                                 </div>
-                            </section>
-                        <?php endif; ?>
+                            <?php else: ?>
+                                <?php if (!empty($question['starter_code'])): ?>
+                                    <div style="margin-top: 18px; margin-bottom: 10px; font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(20,43,80,0.68); font-weight: 800;">Starter code</div>
+                                    <pre style="margin: 0 0 14px; padding: 16px; border-radius: 18px; background: rgba(16,45,89,0.05); border: 1px solid rgba(16,45,89,0.08); overflow: auto; color: var(--dark-navy); font-size: 0.82rem;"><?php echo e($question['starter_code']); ?></pre>
+                                <?php endif; ?>
+                                <textarea class="coding-box" name="answers[<?php echo (int) $question['id']; ?>][code]" placeholder="Tulis jawaban coding Anda di sini..."></textarea>
+                            <?php endif; ?>
+                        </div>
                     <?php endforeach; ?>
 
-                    <div class="flex justify-end">
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-xl">Submit Assessment</button>
+                    <div class="action-row">
+                        <button class="btn-secondary" type="button" data-assessment-prev>Sebelumnya</button>
+                        <button class="btn-primary" type="button" data-assessment-next>Selanjutnya</button>
                     </div>
                 </form>
-            </div>
+            <?php else: ?>
+                <div class="question-card" style="padding: 28px; text-align: center;">
+                    <h2 style="margin: 0 0 8px; font-size: 1.7rem; font-weight: 900; color: var(--dark-navy);">Assessment belum tersedia</h2>
+                    <p style="margin: 0; color: rgba(20,43,80,0.7);">Belum ada soal yang terdaftar di database. Silakan cek data soal di tabel questions.</p>
+                </div>
+            <?php endif; ?>
         </main>
     </div>
+    <script src="assets/js/app.js?v=20261101"></script>
 </body>
 </html>
 

@@ -9,7 +9,7 @@ if (!($pdo instanceof PDO)) {
 }
 
 if (is_logged_in()) {
-    redirect('/baliready-ai/public/dashboard.php');
+    redirect('dashboard.php');
 }
 
 $message = null;
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $message = $result['message'];
 
     if ($result['success']) {
-        redirect('/baliready-ai/public/login.php');
+        redirect('login.php');
     }
 }
 ?>
@@ -31,37 +31,113 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register | BaliReady AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/css/style.css?v=20261101">
 </head>
-<body class="bg-slate-50 min-h-screen flex items-center justify-center p-6">
-    <div class="w-full max-w-md bg-white rounded-3xl shadow-lg border border-slate-200 p-8">
-        <div class="text-center mb-8">
-            <div class="mx-auto w-12 h-12 rounded-2xl bg-blue-600 text-white font-bold flex items-center justify-center">BR</div>
-            <h1 class="mt-4 text-2xl font-bold text-slate-900">Buat akun</h1>
+<body>
+    <div class="auth-shell">
+        <div class="auth-card">
+            <aside class="auth-panel-left">
+                <div class="auth-brand">
+                    <span class="logo-mark">BR</span>
+                    <span>BaliReady AI</span>
+                </div>
+
+                <div class="auth-copy">
+                    <span class="auth-ribbon">Start Your Journey</span>
+                    <h1>Buat akun agar bisa mengikuti asesmen dan roadmap belajar.</h1>
+                    <p>Daftarkan diri Anda untuk melihat potensi skill, minat karier, serta rekomendasi pengembangan yang relevan dengan masa depan.</p>
+                </div>
+
+                <div class="bali-scene" aria-hidden="true">
+                    <div class="roof r1"></div>
+                    <div class="roof r2"></div>
+                    <div class="roof r3"></div>
+                    <div class="pilar"></div>
+                    <div class="pilar"></div>
+                    <div class="pilar"></div>
+                    <div class="pilar"></div>
+                </div>
+            </aside>
+
+            <main class="auth-panel-right">
+                <div class="inner">
+                    <div class="auth-brand" style="font-size: 2.1rem; justify-content: flex-start;">
+                        <span class="logo-mark">BR</span>
+                        <span>BaliReady AI</span>
+                    </div>
+                    <h2 class="auth-form-title">Daftar</h2>
+                    <p class="auth-form-subtitle">Isi identitas Anda untuk memulai.</p>
+
+                    <?php if ($message): ?>
+                        <div style="margin-bottom: 16px; background: rgba(239,71,111,0.08); border: 1px solid rgba(239,71,111,0.2); color: #b93f5f; border-radius: 14px; padding: 12px 14px; font-weight:600;">
+                            <?php echo e($message); ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <form method="post" class="form-grid">
+                        <?php echo csrf_field(); ?>
+                        <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                            <div class="form-field">
+                                <label for="register-name">Nama lengkap</label>
+                                <input id="register-name" type="text" name="name" placeholder="Nama lengkap" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="register-nis">NIS</label>
+                                <input id="register-nis" type="text" name="nis" placeholder="Contoh: 20241234">
+                            </div>
+                        </div>
+
+                        <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                            <div class="form-field">
+                                <label for="register-email">Email</label>
+                                <input id="register-email" type="email" name="email" placeholder="nama@email.com" required>
+                            </div>
+                            <div class="form-field">
+                                <label for="register-kelas">Kelas</label>
+                                <input id="register-kelas" type="text" name="kelas" placeholder="XII RPL 1">
+                            </div>
+                        </div>
+
+                        <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                            <div class="form-field">
+                                <label for="register-jurusan">Jurusan</label>
+                                <select id="register-jurusan" name="jurusan">
+                                    <option value="">Pilih jurusan</option>
+                                    <option value="RPL">RPL</option>
+                                    <option value="PPLG">PPLG</option>
+                                    <option value="TKJ">TKJ</option>
+                                    <option value="TBSM">TBSM</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="register-password">Password</label>
+                                <div class="password-wrap">
+                                    <input id="register-password" type="password" name="password" placeholder="Minimal 6 karakter" required>
+                                    <button type="button" class="password-toggle" data-toggle-password="register-password">Show</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="register-confirm">Konfirmasi password</label>
+                            <div class="password-wrap">
+                                <input id="register-confirm" type="password" name="confirm_password" placeholder="Ulangi password" required>
+                                <button type="button" class="password-toggle" data-toggle-password="register-confirm">Show</button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="auth-submit">Daftar</button>
+                    </form>
+
+                    <div class="auth-meta">
+                        Sudah punya akun? <a href="login.php">Masuk</a>
+                    </div>
+                </div>
+            </main>
         </div>
-
-        <?php if ($message): ?>
-            <div class="mb-4 rounded-xl bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm"><?php echo e($message); ?></div>
-        <?php endif; ?>
-
-        <form method="post" class="space-y-4">
-            <?php echo csrf_field(); ?>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Nama lengkap</label>
-                <input type="text" name="name" required class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Masukkan nama lengkap">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                <input type="email" name="email" required class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="nama@email.com">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Password</label>
-                <input type="password" name="password" required class="w-full rounded-xl border border-slate-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Minimal 6 karakter">
-            </div>
-            <button type="submit" class="w-full rounded-xl bg-blue-600 text-white font-semibold py-3 hover:bg-blue-700">Daftar</button>
-        </form>
-
-        <p class="mt-6 text-center text-sm text-slate-600">Sudah punya akun? <a href="login.php" class="text-blue-600 font-medium">Masuk</a></p>
     </div>
+
+    <script src="assets/js/app.js?v=20261101"></script>
 </body>
 </html>
 

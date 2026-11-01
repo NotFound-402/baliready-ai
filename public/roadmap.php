@@ -15,7 +15,7 @@ $roadmapModel = new RoadmapModel($pdo);
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['item_id'])) {
     $status = $_POST['status'] ?? 'pending';
     $roadmapModel->markItemStatus((int) $_POST['item_id'], (int) $user['id'], $status);
-    redirect('/baliready-ai/public/roadmap.php');
+    redirect('roadmap.php');
 }
 
 $roadmap = $roadmapModel->getLatestRoadmap((int) $user['id']);

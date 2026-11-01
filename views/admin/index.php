@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | BaliReady AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="assets/css/style.css?v=20261101">
 </head>
 <body class="bg-slate-50 text-slate-800">
     <div class="min-h-screen p-6 md:p-10">
@@ -190,5 +191,6 @@
             </div>
         </div>
     </div>
+    <script src="assets/js/app.js?v=20261101"></script>
 </body>
 </html>

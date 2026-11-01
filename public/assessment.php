@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_assessment']))
     $result = $controller->submit($_POST, (int) current_user()['id']);
 
     if ($result['success']) {
-        redirect('/baliready-ai/public/result.php?session_id=' . (int) $result['session_id']);
+        redirect('result.php?session_id=' . (int) $result['session_id']);
     }
 
     $errorMessage = $result['message'];

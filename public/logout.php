@@ -10,4 +10,4 @@ if (ini_get('session.use_cookies')) {
 
 session_destroy();
 
-redirect('/baliready-ai/public/login.php');
+redirect('login.php');
